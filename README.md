@@ -32,6 +32,6 @@ python test_yolo_split.py --opt options/test/{YOUR_OPTION_FILE}.yml
 ```
 
 ### Acknowledgement
-The implementation of architecture search is borrowed from [DARTS](https://github.com/quark0/darts)
+The implementation of architecture search is borrowed from [DARTS](https://github.com/quark0/darts).
 
 The images are annotated by [labelme](https://github.com/wkentaro/labelme).
