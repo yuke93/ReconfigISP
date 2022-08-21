@@ -1,0 +1,59 @@
+#### general settings
+name: 116_isp_yolo_ba01_de04_pr011415_sz768_cdc46
+use_tb_logger: true
+model: isp_yolo
+gpu_ids: [6]
+dist: false
+machine: cdc46
+
+#### datasets
+datasets:
+  train:
+    # name: DIV2K
+    mode: OnePlus_Rggb2Obj
+    dataroot: /DATA/yuke/CVPR20/OnePlus/annotation/train50_dng_json/
+
+    use_shuffle: true
+    n_workers: 1  # per GPU
+    batch_size: 1
+    data_size: 768
+
+    max_crop: 2
+
+#### network structures
+network_G:
+  which_model_G: IspUniversal
+  architecture: Bayer_01_Demosaic_04_sRGB_01_14_15
+  individual_module_paths: [~, ~, ~, ~, ~]
+
+#### path
+path:
+  pretrain_model_G: ~
+#  strict_load: true
+#  resume_state: ~
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-3
+  beta1: 0.9
+  beta2: 0.99
+  niter: 8000
+  pixel_criterion: l2
+
+  # lr
+  warmup_iter: -1  # no warm up
+  lr_scheme: MultiStepLR
+  lr_steps: [2000, 4000, 6000]
+  lr_gamma: 0.5
+  restarts: ~
+  restart_weights: ~
+  clear_state: false
+
+  manual_seed: 10
+#  val_freq: !!float 5e3
+
+#### logger
+logger:
+  print_freq: 5
+  image_print_ratio: 10
+  save_checkpoint_freq: !!float 2000

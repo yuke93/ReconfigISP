@@ -1,0 +1,31 @@
+# test
+
+#### general settings
+name: S7ISP_test
+model: isp
+gpu_ids: [7]
+dist: false
+test_seed: 10
+machine: cdc46
+
+#### datasets
+datasets:
+  test:
+    # name: DIV2K
+    mode: S7ISP_RGGB2BGR_Test
+    dataroot: /DATA/S7-ISP-Rggb2Bgr_Test/
+    data_size: ~  # None for whole image
+    patch_size: 1024
+    patch_stride: 960
+
+#### network structures
+network_G:
+  which_model_G: OriginUniversal
+  architecture: Bayer_01_Demosaic_01_sRGB_04_01_13
+  individual_module_paths: [~, ~, ~, ~, ~]
+
+#### path
+path:
+  pretrain_model_G: ../experiments/S7ISP_isp/models/80000_G.pth
+  strict_load: true
+

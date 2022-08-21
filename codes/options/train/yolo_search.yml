@@ -1,0 +1,61 @@
+#### general settings
+name: yolo_search
+use_tb_logger: true
+model: darts_yolo
+gpu_ids: [2,3,4,5]
+dist: true
+machine: cdc46
+
+#### datasets
+datasets:
+  train:
+    # name: DIV2K
+    mode: OnePlus_Rggb2Obj
+    dataroot: /DATA/yuke/CVPR20/OnePlus/annotation/train50_dng_json/
+    n_workers: 1  # per GPU
+    batch_size: 4
+    data_size: 256
+
+    max_crop: 3
+
+#### network structures
+network_G:
+  which_model_G: SuperPruneFifteenDemosFourBayerTwo
+  n_step: 3  # only count RGB
+  n_modules: 15
+  prune_threshold: 0.2
+
+#### path
+path:
+  pretrain_model_G: ~
+#  strict_load: true
+#  resume_state: ~
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-4
+  momentum_G: 0.9
+
+  lr_meta: !!float 1e-4
+  beta1: 0.9
+  beta2: 0.99
+  niter: 40000
+  pixel_criterion: l2
+
+  # lr
+  warmup_iter: -1  # no warm up
+  lr_scheme: MultiStepLR
+  lr_steps: [10000, 20000, 30000]
+  lr_gamma: 0.5
+  restarts: ~
+  restart_weights: ~
+  clear_state: false
+
+  manual_seed: 10
+#  val_freq: !!float 5e3
+
+#### logger
+logger:
+  print_freq: 10
+  image_print_ratio: 20
+  save_checkpoint_freq: !!float 4000

@@ -1,0 +1,65 @@
+#### general settings
+name: S7ISP_search
+use_tb_logger: true
+model: darts_ft
+gpu_ids: [1]
+dist: false
+machine: cdc46
+
+#### datasets
+datasets:
+  train:
+    # name: DIV2K
+    mode: S7ISP_RGGB2BGR
+    dataroot: /DATA/yuke/CVPR20/S7-ISP/S7-ISP-Rggb2Bgr/
+    n_workers: 2  # per GPU
+    batch_size: 4
+    data_size: 48
+
+#### proxy fine-tuning
+proxy_ft_params:
+  memory_size: 1000
+  ft_interval: 100
+  ft_steps: 5
+
+#### network structures
+network_G:
+  which_model_G: SuperPruneFifteenDemosFourBayerTwoFt
+  n_step: 3  # only count RGB
+  n_modules: 15
+  prune_threshold: 0.2
+
+#### path
+path:
+  pretrain_model_G: ~
+#  strict_load: true
+#  resume_state: ~
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-4
+  momentum_G: 0.9
+
+  lr_meta: !!float 1e-4
+  beta1: 0.9
+  beta2: 0.99
+  niter: 100000
+  pixel_criterion: l2
+
+  # lr
+  warmup_iter: -1  # no warm up
+  lr_scheme: MultiStepLR
+  lr_steps: [25000, 50000, 75000]
+  lr_gamma: 0.5
+  restarts: ~
+  restart_weights: ~
+  clear_state: false
+
+  manual_seed: 10
+#  val_freq: !!float 5e3
+
+#### logger
+logger:
+  print_freq: 50
+  image_print_ratio: 20
+  save_checkpoint_freq: !!float 10000

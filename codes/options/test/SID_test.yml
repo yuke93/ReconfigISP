@@ -1,0 +1,34 @@
+# test
+
+#### general settings
+name: SID_test
+model: isp
+gpu_ids: [1]
+dist: false
+test_seed: 10
+machine: cdc46
+
+#### datasets
+datasets:
+  test:
+    # name: DIV2K
+    mode: SID_Sony_Ratio_Test_RGGB2BGR
+    dataroot: /DATA/SID/imgs/SID_Sony_Test_Rggb2Bgr/
+    data_size: ~  # None for whole image
+    patch_size: 512
+    patch_stride: 480
+
+    # exposure time
+    sid_expo_in: 0.1s
+    sid_expo_gt: 10s
+
+#### network structures
+network_G:
+  which_model_G: OriginUniversal
+  architecture: Bayer_01_Demosaic_03_sRGB_01_13_11
+
+#### path
+path:
+  pretrain_model_G: ../experiments/SID_isp/models/80000_G.pth
+  strict_load: true
+

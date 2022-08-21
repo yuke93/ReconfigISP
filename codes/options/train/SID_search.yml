@@ -1,0 +1,69 @@
+#### general settings
+name: SID_search
+use_tb_logger: true
+model: darts_ft
+gpu_ids: [0,1,2,3]
+dist: false
+machine: st_sh34
+
+#### datasets
+datasets:
+  train:
+    # name: DIV2K
+    mode: SID_Sony_Ratio_RGGB2BGR_mc
+    dataroot: /mnt/lustre/yuke/DATA/CVPR20/SID/imgs/SID_Sony_Rggb2Bgr/
+    n_workers: 1  # per GPU
+    batch_size: 4
+    data_size: 48
+
+    # exposure time
+    sid_expo_in: 0.1s
+    sid_expo_gt: 10s
+
+#### proxy fine-tuning
+proxy_ft_params:
+  memory_size: 1000
+  ft_interval: 100
+  ft_steps: 5
+
+#### network structures
+network_G:
+  which_model_G: SuperPruneFifteenDemosFourBayerTwoFt
+  n_step: 3  # only count RGB
+  n_modules: 15
+  prune_threshold: 0.2
+
+#### path
+path:
+  pretrain_model_G: ~
+#  strict_load: true
+#  resume_state: ~
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-4
+  momentum_G: 0.9
+
+  lr_meta: !!float 1e-4
+  beta1: 0.9
+  beta2: 0.99
+  niter: 200000
+  pixel_criterion: l2
+
+  # lr
+  warmup_iter: -1  # no warm up
+  lr_scheme: MultiStepLR
+  lr_steps: [50000, 100000, 150000]
+  lr_gamma: 0.5
+  restarts: ~
+  restart_weights: ~
+  clear_state: false
+
+  manual_seed: 10
+#  val_freq: !!float 5e3
+
+#### logger
+logger:
+  print_freq: 50
+  image_print_ratio: 20
+  save_checkpoint_freq: !!float 25000

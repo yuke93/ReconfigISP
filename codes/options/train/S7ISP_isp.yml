@@ -1,0 +1,57 @@
+#### general settings
+name: S7ISP_isp
+use_tb_logger: true
+model: isp
+gpu_ids: [2]
+dist: false
+machine: cdc46
+
+#### datasets
+datasets:
+  train:
+    # name: DIV2K
+    mode: S7ISP_RGGB2BGR
+    dataroot: /DATA/yuke/CVPR20/S7-ISP/S7-ISP-Rggb2Bgr/
+
+    use_shuffle: true
+    n_workers: 2  # per GPU
+    batch_size: 8
+    data_size: 224
+
+#### network structures
+network_G:
+  which_model_G: IspUniversal
+  architecture: Bayer_01_Demosaic_01_sRGB_04_01_13
+  individual_module_paths: [~, ~, ~, ~, ~]
+
+#### path
+path:
+  pretrain_model_G: ~
+#  strict_load: true
+#  resume_state: ~
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-3
+  beta1: 0.9
+  beta2: 0.99
+  niter: 80000
+  pixel_criterion: l2
+
+  # lr
+  warmup_iter: -1  # no warm up
+  lr_scheme: MultiStepLR
+  lr_steps: [20000, 40000, 60000]
+  lr_gamma: 0.5
+  restarts: ~
+  restart_weights: ~
+  clear_state: false
+
+  manual_seed: 10
+#  val_freq: !!float 5e3
+
+#### logger
+logger:
+  print_freq: 50
+  image_print_ratio: 10
+  save_checkpoint_freq: !!float 20000
